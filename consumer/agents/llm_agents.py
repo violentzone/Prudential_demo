@@ -12,9 +12,8 @@ decide_agent = LlmAgent(
                 2. Evaluate on "AnnualIncome" column, if blow 500000, the person's income is too low for insurance
                 3. Despite factors above, if column "Government Sector Worker" == 1, means the person is government worker, which is always high value target
                 
-                If the person is not valuable for selling insurance, add `description` column using 'description_adder' tool
-                """,
-    tools=[description_adder]
+                If the person is not valuable for selling insurance, add `description` column 
+                """
 )
 
 
@@ -34,7 +33,7 @@ summary_agent = LlmAgent(
     name='summary_and_suggestion_agent',
     description="You are a sales professional, you response client's Determined insurance fee and details if client meets valuable target, if client did not meets valuable target, tell them reason politely",
     model='gemini-2.5-pro',
-    insturction="""You are sales manager with top sales skills, your goal is to explain insurance fee and details to client, there are two conditions:
+    instruction="""You are sales manager with top sales skills, your goal is to explain insurance fee and details to client, there are two conditions:
     1. Client is not a valuable target, in this case decline the client politely
     2. Client meets valuable target, explain insurance fee and convince client it's a good deal.
     """
