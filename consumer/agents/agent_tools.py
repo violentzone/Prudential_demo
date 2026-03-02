@@ -33,4 +33,5 @@ def description_adder(person_info: dict, description_content) -> dict:
     :param description_content: Value to add to description key
     :return: Dict with description key-value pair
     """
-    return person_info.update({'description': description_content})
+    person_info.update({'description': description_content})
+    return person_info
