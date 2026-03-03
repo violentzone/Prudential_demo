@@ -1,0 +1,6 @@
+Age,Government Sector Worker,GraduateOrNot,AnnualIncome,FamilyMembers,ChronicDiseases,FrequentFlyer,EverTravelledAbroad,TravelInsurance
+31,0,1,1250000,7,0,0,0,0
+25,0,0,1150000,4,0,0,0,0
+31,1,1,1300000,4,0,0,0,0
+34,0,0,1300000,6,0,1,0,1
+28,0,1,1250000,2,0,1,0,0
