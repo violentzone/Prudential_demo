@@ -4,8 +4,6 @@ services:
     container_name: kafka
     ports:
       - "9092:9092"
-    networks:
-      - app-network
     healthcheck:
       test: [ "CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server localhost:9092 --list" ]
       interval: 10s
@@ -17,34 +15,26 @@ services:
   consumer:
     build: .
     container_name: consumer
-    networks:
-      - app-network
     depends_on:
       kafka:
         condition: service_healthy
-
     volumes:
       - ./consumer:/app
     working_dir: /app
     env_file:
       - ./consumer/.env
+    network_mode: "host"
     command: ["python", "consumer.py"]
 
   producer:
     build: .
     container_name: producer
-    networks:
-      - app-network
     depends_on:
       kafka:
         condition: service_healthy
-
     volumes:
       - ./producer:/app
     working_dir: /app
+    network_mode: "host"
     command: ["python", "producer.py"]
 
-
-networks:
-  app-network:
-    driver: bridge
