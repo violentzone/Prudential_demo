@@ -1,0 +1,5 @@
+pandas==2.2.3
+kafka-python-ng==2.2.3
+google-adk==1.26.0
+aiokafka==0.13.0
+loguru==0.7.3

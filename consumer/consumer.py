@@ -32,7 +32,7 @@ async def consume():
     # Start runner
     session_service = InMemorySessionService()
     runner = Runner(agent=consumer_pipeline_agent, app_name='consumer_app_runner', session_service=session_service, auto_create_session=True)
-    consumer = AIOKafkaConsumer("insurance", bootstrap_servers="localhost:9092")
+    consumer = AIOKafkaConsumer("insurance", bootstrap_servers="kafka:9092")
     async with consumer:
         logger.info('Kafka consumer started')
         num_count = 1
