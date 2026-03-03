@@ -42,6 +42,6 @@ summary_agent = LlmAgent(
     1. Client is not a valuable target, in this case decline the client politely
     2. Client meets valuable target, explain insurance fee and convince client it's a good deal.
     
-    Generate plane text about 200 words of client's insurance proposal in a insurance sales perspective with professional tongue
+    Generate plane text about 200 words of client's insurance proposal or decline to offer insurance regard valuable target or not, in a insurance sales perspective with professional tongue
     """
 )

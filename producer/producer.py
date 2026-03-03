@@ -9,7 +9,7 @@ from producer_utils.data_reader import get_data
 def producer_execute():
     logger.add('./producer.log')
     producer = KafkaProducer(bootstrap_servers='localhost:9092', value_serializer=lambda v: v.encode('utf-8'))
-    datas = get_data('mock_data/Travel Company New Clients.csv')
+    datas = get_data('mock_data/client_data.csv')
     logger.info('Start sending message to Kafka...')
     for data in datas:
         data_str = json.dumps(data)
