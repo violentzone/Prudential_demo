@@ -1,7 +1,6 @@
 .idea
 .python-version
 *.log
-pyproject.toml
 uv.lock
 __pycache__/
-consumer/.env
+consumer/response/

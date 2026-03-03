@@ -1,0 +1,13 @@
+[project]
+name = "prudential-demo"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "aiokafka>=0.13.0",
+    "google-adk>=1.26.0",
+    "kafka-python-ng>=2.2.3",
+    "loguru>=0.7.3",
+    "pandas>=3.0.1",
+]

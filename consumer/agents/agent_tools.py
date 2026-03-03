@@ -3,7 +3,7 @@ Tool library for consumer agents
 """
 
 
-def calculate_insurance_fee(age: int, annual_income: int, family_member: int, chronic_diseases: bool, frequent_flyer: bool, ever_travel_aboard: bool) -> float:
+def calculate_insurance_fee(age: int, annual_income: int, family_member: int, chronic_diseases: bool, frequent_flyer: bool, ever_travel_aboard: bool) -> str:
     """
     Calculate insurance fee by given information of a client
     :param age: Age of the client
@@ -23,7 +23,7 @@ def calculate_insurance_fee(age: int, annual_income: int, family_member: int, ch
     income_factor = 1 + (annual_income/100000) * 0.05
 
     best_fee = base_premium * age_factor * family_factor * chronic_factor * fly_factor * travel_factor * income_factor
-    return best_fee
+    return str(best_fee)
 
 
 def description_adder(person_info: dict, description_content) -> dict:

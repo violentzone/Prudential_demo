@@ -15,7 +15,7 @@ def producer_execute():
         data_str = json.dumps(data)
         producer.send(topic='insurance', value=data_str)
         logger.info(f'SENDING: || {data_str}')
-        sleep(0.1)
+        sleep(3)
 
 
 if __name__ == '__main__':

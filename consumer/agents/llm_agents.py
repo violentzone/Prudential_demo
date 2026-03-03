@@ -8,11 +8,16 @@ decide_agent = LlmAgent(
     model='gemini-2.5-flash-lite',
     instruction="""You are a sales agent of insurance company, you decide a person is valuable for approaching for selling insurance,
                 Evaluate on factors below:
-                1. If the person is not graduated(GraduateOrNot column == 0 ), he/she is not valuable for selling insurance, Note: 1=Yes and 0=No
-                2. Evaluate on "AnnualIncome" column, if blow 500000, the person's income is too low for insurance
-                3. Despite factors above, if column "Government Sector Worker" == 1, means the person is government worker, which is always high value target
+                1. Determine if the person is a 'high_value_target' based on:
+                   - GraduateOrNot == 1
+                   - AnnualIncome >= 500000
+                   - OR Government Sector Worker == 1 (Always High Value)
+                2. Update the JSON data: 
+                   - Set a field "is_valuable": true/false.
+                   - If false, add a "rejection_reason" field.
+                3. Pass the entire updated JSON object to the next agent. Do not say goodbye.
                 
-                If the person is not valuable for selling insurance, add `description` column 
+                If the person is not valuable for selling insurance, add `description` column and write why he/she is not suitable for the insurance
                 """
 )
 
@@ -36,5 +41,7 @@ summary_agent = LlmAgent(
     instruction="""You are sales manager with top sales skills, your goal is to explain insurance fee and details to client, there are two conditions:
     1. Client is not a valuable target, in this case decline the client politely
     2. Client meets valuable target, explain insurance fee and convince client it's a good deal.
+    
+    Generate plane text about 200 words of client's insurance proposal in a insurance sales perspective with professional tongue
     """
 )
