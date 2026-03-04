@@ -1,94 +1,93 @@
-# 📰 News Intelligence Agentic System
+# 🏥 Travel Insurance Analyzer System
 
-A production-style agentic pipeline built with **Kafka**, **Gemini function-calling**, and **Docker Compose**.
+A production-style agentic pipeline built with **Kafka**, **Google-ADK**, and **Docker Compose**, designed to analyze client data for travel insurance suitability and risk assessment.
 
-## Architecture
+## 🏗️ Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                     Docker Compose                          │
-│                                                             │
-│  ┌──────────────────┐   Kafka Topic    ┌─────────────────┐ │
-│  │  Producer Agent  │  "raw-news"  ──► │ Consumer Agent  │ │
-│  │                  │                  │                  │ │
-│  │ Tools:           │                  │ Tools:           │ │
-│  │ • search_news    │                  │ • analyse_sent.. │ │
-│  │ • categorize     │                  │ • assess_risk    │ │
-│  │ • score_import.. │                  │ • gen_actions    │ │
-│  └──────────────────┘                  └────────┬─────────┘ │
-│                                                 │           │
-│                                    ┌────────────▼─────────┐ │
-│                                    │  Kafka Topic         │ │
-│                                    │  "processed-insights"│ │
-│                                    │  + /output/*.jsonl   │ │
-│                                    └──────────────────────┘ │
-└─────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────────────┐
+│                           Docker Compose                                │
+│                                                                         │
+│  ┌──────────────────┐      Kafka Topic      ┌────────────────────────┐  │
+│  │     Producer     │      "insurance"      │    Consumer Agent      │  │
+│  │                  │ ────────────────────► │                        │  │
+│  │ • Reads CSV Data │                       │ • LLM Risk Analysis    │  │
+│  │ • Data Streaming │                       │ • Suitability Scoring  │  │
+│  │ • JSON Encoding  │                       │ • Personalized Actions │  │
+│  └──────────────────┘                       └───────────┬────────────┘  │
+│                                                         │               │
+│                                             ┌───────────▼────────────┐  │
+│                                             │    Output Directory    │  │
+│                                             │    ./consumer/response/│  │
+│                                             │      (1.txt, 2.txt...) │  │
+│                                             └────────────────────────┘  │
+└─────────────────────────────────────────────────────────────────────────┘
 ```
 
-## Key Design Decisions
+## 🔄 Workflow
 
-| Decision | Rationale |
-|---|---|
-| Gemini function-calling | LLM explicitly drives tool selection — true agentic behaviour |
-| Separate tool implementations | Tools are pure Python; easy to swap mock → real APIs |
-| Manual offset commit | Prevents message loss on agent failure |
-| Category-keyed Kafka messages | Enables partition-based parallelism by domain |
-| JSONL output | Append-only, easy to stream into downstream analytics |
+1.  **Producer**: Loads mock client data from `producer/mock_data/client_data.csv`. It streams each client's profile as a JSON message to the `insurance` Kafka topic every 3 seconds.
+2.  **Kafka**: Acts as the message broker, ensuring reliable delivery of client data from the producer to the consumer.
+3.  **Consumer Agent**: 
+    - Polls the `insurance` topic for new client data.
+    - Utilizes the **Google-ADK** to process the data through an intelligent pipeline.
+    - Performs insurance analysis, risk assessment, and generates recommendations.
+    - Saves the final analysis for each client into individual `.txt` files within the `consumer/response/` folder.
 
-## Quick Start
+## 🚀 Quick Start (Running the System)
 
+The project is fully dockerized and includes helper scripts to start the entire stack from scratch.
+
+### 🪟 Windows System
+Run the batch file to stop existing containers, rebuild, and start the services:
+```cmd
+run.bat
+```
+
+### 🐧 Linux / macOS System
+Grant execution permissions and run the shell script:
 ```bash
-# 1. Set your API key
-export GEMINI_API_KEY=your_key_here
-
-# 2. Build and start all services
-docker compose up --build
-
-# 3. Watch insights appear
-tail -f output/insights.jsonl | python -m json.tool
-
-# 4. Check critical alerts
-cat output/alerts.txt
+chmod +x run.sh
+./run.sh
 ```
 
-## Project Structure
+## 📁 Project Structure
 
 ```
-kafka-agent/
-├── docker-compose.yml
+Prudential_demo/
+├── docker-compose.yml   # Orchestrates Kafka, Producer, and Consumer
+├── Dockerfile           # Shared Python environment for producer and consumer
+├── run.bat / run.sh     # Quick start scripts
 ├── producer/
-│   ├── Dockerfile
-│   ├── requirements.txt
-│   └── agent.py          # Producer Agent (search + enrich)
-├── consumer/
-│   ├── Dockerfile
-│   ├── requirements.txt
-│   └── agent.py          # Consumer Agent (analyse + alert)
-└── shared/
-    └── models.py          # NewsEvent, ProcessedInsight, Kafka configs
+│   ├── producer.py      # Streams client data to Kafka
+│   └── mock_data/       # Source CSV data
+└── consumer/
+    ├── consumer.py      # Kafka consumer & Agent runner
+    ├── .env             # Environment variables (GEMINI_API_KEY)
+    ├── agents/          # Agent logic and tool definitions
+    └── response/        # Generated analysis reports (.txt)
 ```
 
-## Agent Flow Detail
+## 🛠️ Key Components
 
-### Producer Agent
-1. Cycles through a watchlist of strategic topics
-2. LLM calls `search_news(query)` → gets article list
-3. LLM calls `categorize_article(headline, snippet)` → category + keywords
-4. LLM calls `score_importance(...)` → 0-1 score
-5. Publishes `NewsEvent` to `raw-news` topic every 30s
+| Component          | Description |
+|--------------------|---|
+| **Kafka**          | Distributed streaming platform for high-throughput messaging. |
+| **Google-ADK**     | Powers the intelligent analysis using Google's generative models. |
+| **Docker Compose** | Simplifies deployment by running the entire stack in isolated containers. |
+| **Loguru**         | Provides structured logging for both producer and consumer. |
 
-### Consumer Agent
-1. Polls `raw-news` topic
-2. LLM calls `analyse_sentiment(headline, summary)` → sentiment label + score
-3. LLM calls `assess_risk(category, sentiment, raw_score)` → risk level + final score
-4. LLM calls `generate_action_items(...)` → analyst action items
-5. Saves `ProcessedInsight` to JSONL + publishes to `processed-insights`
-6. If `risk_level == "critical"` → appends to `alerts.txt`
+## ⚙️ Configuration
 
-## Extending This System
+1.  Ensure you have a `.env` file in the `consumer/` directory.
+2.  Add your Gemini API Key:
+    ```env
+    GEMINI_API_KEY=your_google_gemini_api_key_here
+    ```
 
-- **Real news API**: Replace `_tool_search_news` with NewsAPI / GDELT / Bloomberg
-- **Notification**: Add a Slack/email tool in the consumer for critical alerts  
-- **Scaling**: Increase Kafka partitions + run multiple consumer containers
-- **Observability**: Add Prometheus metrics on message lag and tool latency
-- **Persistence**: Swap JSONL for PostgreSQL or Elasticsearch
+## 📈 Scaling & Extensions
+
+- **Real-time Data**: Connect the producer to a CRM or live database instead of a CSV.
+- **Enhanced Tools**: Add tools to the agent for checking real-time travel advisories or medical databases.
+- **Persistence**: Save results to a database (PostgreSQL/MongoDB) instead of flat files.
+- **Monitoring**: Integrate Prometheus and Grafana to track processing latency and Kafka lag.
