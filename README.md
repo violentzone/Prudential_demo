@@ -58,6 +58,7 @@ Prudential_demo/
 ├── docker-compose.yml   # Orchestrates Kafka, Producer, and Consumer
 ├── Dockerfile           # Shared Python environment for producer and consumer
 ├── run.bat / run.sh     # Quick start scripts
+├── requirements.txt     # Envrioment of Producer, and Consumer
 ├── producer/
 │   ├── producer.py      # Streams client data to Kafka
 │   └── mock_data/       # Source CSV data

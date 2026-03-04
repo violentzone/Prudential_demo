@@ -1,5 +1,5 @@
 from google.adk.agents import LlmAgent
-from .agent_tools import calculate_insurance_fee, description_adder
+from .agent_tools import calculate_insurance_fee
 
 
 decide_agent = LlmAgent(
@@ -16,8 +16,6 @@ decide_agent = LlmAgent(
                    - Set a field "is_valuable": true/false.
                    - If false, add a "rejection_reason" field.
                 3. Pass the entire updated JSON object to the next agent. Do not say goodbye.
-                
-                If the person is not valuable for selling insurance, add `description` column and write why he/she is not suitable for the insurance
                 """
 )
 
@@ -36,7 +34,7 @@ calculate_fee_agent = LlmAgent(
 
 summary_agent = LlmAgent(
     name='summary_and_suggestion_agent',
-    description="You are a sales professional, you response client's Determined insurance fee and details if client meets valuable target, if client did not meets valuable target, tell them reason politely",
+    description="You are a sales professional, you response client's Determined insurance fee and details if client meets valuable target, if client did not meet requirements valuable target, tell them reason politely",
     model='gemini-2.5-pro',
     instruction="""You are sales manager with top sales skills, your goal is to explain insurance fee and details to client, there are two conditions:
     1. Client is not a valuable target, in this case decline the client politely
