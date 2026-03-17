@@ -18,8 +18,8 @@ def calculate_insurance_fee(age: int, annual_income: int, family_member: int, ch
     age_factor = 1 + (age - 30) * 0.01
     family_factor = 1 + family_member * 0.02
     chronic_factor = 1.5 if chronic_diseases else 1
-    fly_factor = 1.1 if frequent_flyer else 1
-    travel_factor = 0.9 if ever_travel_aboard else 1
+    fly_factor = 1 if frequent_flyer else 1.1
+    travel_factor = 1 if ever_travel_aboard else 0.9
     income_factor = 1 + (annual_income/100000) * 0.05
 
     best_fee = base_premium * age_factor * family_factor * chronic_factor * fly_factor * travel_factor * income_factor
